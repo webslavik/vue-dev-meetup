@@ -13,12 +13,14 @@
 
     <!-- Carousel -->
     <v-layout row wrap class='mb-2'>
-      <v-flex sm12>
+      <v-flex sm12 xl6 offset-xl3>
         <v-carousel>
           <v-carousel-item 
             v-for="meetup in meetups" 
             :src="meetup.imageUrl" 
-            :key="meetup.id">
+            :key="meetup.id"
+            style='cursor: pointer'
+            @click.native='loadingMeetup(meetup.id)'>
             <div class='title'>
               {{ meetup.title }}
             </div>
@@ -38,12 +40,17 @@
 
 <script>
   export default {
-    data() {
+    data () {
       return {
         meetups: [
           { imageUrl: 'http://www.100resilientcities.org/wp-content/uploads/2017/06/Boston-hero-crop.jpg', id: '1', title: 'Meetup in Boston' },
-          { imageUrl: 'https://9227-presscdn-0-11-pagely.netdna-ssl.com/wp-content/uploads/2016/10/30393079282_9baa011f08_b.jpg', id: '2', title: 'Meetup in Philadelphia' },
+          { imageUrl: 'https://9227-presscdn-0-11-pagely.netdna-ssl.com/wp-content/uploads/2016/10/30393079282_9baa011f08_b.jpg', id: '2', title: 'Meetup in Philadelphia' }
         ]
+      }
+    },
+    methods: {
+      loadingMeetup(id) {
+        this.$router.push(`/meetups/${id}`);
       }
     }
   }
