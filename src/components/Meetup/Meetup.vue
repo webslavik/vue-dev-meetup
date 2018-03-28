@@ -4,13 +4,13 @@
       <v-flex sm12 xl8 offset-xl2>
         <v-card>
           <v-card-title>
-            <h2>My Meetup</h2>
+            <h2>{{ meetup.title }}</h2>
           </v-card-title>
           <v-card-media
-            src="http://www.100resilientcities.org/wp-content/uploads/2017/06/Boston-hero-crop.jpg"
-            height="400px" />
+            :src='meetup.imageUrl'
+            height='400px' />
           <v-card-text>
-            <div>28th March 2018 - Where it takes place</div>
+            <div>{{ meetup.date }} - Where it takes place</div>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad dolorum magnam reprehenderit ea a molestias debitis dolor iure praesentium cumque consequatur asperiores placeat totam molestiae id deleniti, facilis aut iusto?</p>
           </v-card-text>
           <v-card-actions>
@@ -22,5 +22,27 @@
     </v-layout>
   </v-container>
 </template>
+
+<script>
+  export default {
+    name: 'Meetup',
+    props: {
+      id: {
+        type: [String, Number]
+      }
+    },
+    computed: {
+      meetup () {
+        return this.$store.getters.loadedMeetup(this.id)
+      }
+    }
+    // TODO: use "computed" better then use "created"? check in future!
+    // created() {
+    //   const id = this.$route.params.id
+    //   this.meetup = this.$store.getters.loadedMeetup(id)
+    // }
+  }
+</script>
+
 
 
