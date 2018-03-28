@@ -17,7 +17,7 @@
     </v-navigation-drawer>
 
     <!-- Toolbar -->
-    <v-toolbar class='red white--text'>
+    <v-toolbar class='primary white--text'>
       <v-toolbar-side-icon class='hidden-sm-and-up white--text' @click='sideNav = !sideNav' />
       <v-toolbar-title>
         <router-link to='/' tag='span' style='cursor: pointer'>DevMeetup</router-link>
