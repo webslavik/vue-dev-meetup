@@ -10,13 +10,17 @@ export const store = new Vuex.Store({
         imageUrl: 'http://www.100resilientcities.org/wp-content/uploads/2017/06/Boston-hero-crop.jpg',
         id: 'sdfds1',
         title: 'Meetup in Boston',
-        date: '2018-04-23'
+        date: '2018-04-23',
+        location: 'Boston',
+        description: 'Some PHP meetup in Boston'
       },
       {
         imageUrl: 'https://9227-presscdn-0-11-pagely.netdna-ssl.com/wp-content/uploads/2016/10/30393079282_9baa011f08_b.jpg',
         id: 'ghssddf2',
         title: 'Meetup in Philadelphia',
-        date: '2018-03-27'
+        date: '2018-03-27',
+        location: 'Philadelphia',
+        description: 'Some description'
       }
     ],
     user: {

@@ -3,9 +3,12 @@ import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
 
+import DateFilter from './filters/date'
+import { store } from './store'
+
 import 'vuetify/dist/vuetify.min.css'
 
-import { store } from './store'
+Vue.filter('date', DateFilter)
 
 Vue.use(Vuetify, { theme: {
   primary: '#F44336',
