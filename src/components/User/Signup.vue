@@ -12,6 +12,13 @@
     <v-layout row>
       <v-flex sm12 xl4 offset-xl4>
         <v-card>
+          
+          <!-- Alert -->
+          <v-flex sm12 v-if='error'>
+            <alert @dismissed='onDismissed' :text='error.message' />
+          </v-flex>
+
+          <!-- Fields -->
           <v-card-text>
             <form @submit.prevent="onSignup">
               <v-layout row class='mb-3'>
@@ -53,7 +60,9 @@
                 <v-flex sm12>
                   <v-btn 
                     type='submit'
-                    color='primary'>
+                    color='primary'
+                    :loading='loading'
+                    :disabled='loading'>
                     Sign up
                   </v-btn>
                 </v-flex>
@@ -68,6 +77,8 @@
 </template>
 
 <script>
+  import Alert from '../Shared/Alert'
+
   export default {
     data () {
       return {
@@ -76,12 +87,21 @@
         confirmPassword: null
       }
     },
+    components: {
+      Alert
+    },
     computed: {
       comparePassword () {
         return this.password !== this.confirmPassword ? 'password do not match' : true
       },
       user () {
         return this.$store.getters.user
+      },
+      loading () {
+        return this.$store.getters.loading
+      },
+      error () {
+        return this.$store.getters.error
       }
     },
     watch: {
@@ -94,6 +114,9 @@
     methods: {
       onSignup () {
         this.$store.dispatch('signUp', {email: this.email, password: this.password})
+      },
+      onDismissed () {
+        this.$store.commit('clearError')
       }
     }
   }

@@ -24,7 +24,9 @@ export const store = new Vuex.Store({
         description: 'Some description'
       }
     ],
-    user: null
+    user: null,
+    loading: false,
+    error: null
   },
   getters: {
     user (state) {
@@ -44,6 +46,12 @@ export const store = new Vuex.Store({
           return meetup.id === meetupId
         })
       }
+    },
+    loading (state) {
+      return state.loading
+    },
+    error (state) {
+      return state.error
     }
   },
   mutations: {
@@ -52,12 +60,26 @@ export const store = new Vuex.Store({
     },
     createMeetup (state, meetup) {
       state.loadedMeetups.push(meetup)
+    },
+
+    setLoading (state, payload) {
+      state.loading = payload
+    },
+    setError (state, payload) {
+      state.error = payload
+    },
+    clearError (state) {
+      state.error = null
     }
   },
   actions: {
     signIn ({commit}, userData) {
+      commit('setLoading', true)
+      commit('clearError')
       firebase.auth().signInWithEmailAndPassword(userData.email, userData.password)
         .then(user => {
+          commit('setLoading', false)
+
           const authUser = {
             id: user.uid,
             registeredMeetups: []
@@ -66,13 +88,17 @@ export const store = new Vuex.Store({
           commit('setUser', authUser)
         })
         .catch(error => {
+          commit('setLoading', false)
+          commit('setError', error)
           console.log(error)
         })
     },
     signUp ({commit}, userData) {
+      commit('setLoading', true)
+      commit('clearError')
       firebase.auth().createUserWithEmailAndPassword(userData.email, userData.password)
         .then(user => {
-          console.log(user)
+          commit('setLoading', false)
 
           const newUser = {
             id: user.uid,
@@ -82,6 +108,8 @@ export const store = new Vuex.Store({
           commit('setUser', newUser)
         })
         .catch(error => {
+          commit('setLoading', false)
+          commit('setError', error)
           console.log(error)
         })
     },
