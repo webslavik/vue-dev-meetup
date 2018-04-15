@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import * as firebase from 'firebase'
 
 Vue.use(Vuex)
 
@@ -23,12 +24,12 @@ export const store = new Vuex.Store({
         description: 'Some description'
       }
     ],
-    user: {
-      id: 'lfld2',
-      registeredMeetups: ['sdfds1']
-    }
+    user: null
   },
   getters: {
+    user (state) {
+      return state.user
+    },
     loadedMeetups (state) {
       return state.loadedMeetups.sort((meetupA, meetupB) => {
         return meetupA.data > meetupB.data
@@ -46,11 +47,45 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
+    setUser (state, user) {
+      state.user = user
+    },
     createMeetup (state, meetup) {
       state.loadedMeetups.push(meetup)
     }
   },
   actions: {
+    signIn ({commit}, userData) {
+      firebase.auth().signInWithEmailAndPassword(userData.email, userData.password)
+        .then(user => {
+          const authUser = {
+            id: user.uid,
+            registeredMeetups: []
+          }
+
+          commit('setUser', authUser)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+    signUp ({commit}, userData) {
+      firebase.auth().createUserWithEmailAndPassword(userData.email, userData.password)
+        .then(user => {
+          console.log(user)
+
+          const newUser = {
+            id: user.uid,
+            registeredMeetups: []
+          }
+
+          commit('setUser', newUser)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    },
+
     createMeetup ({ commit }, meetupData) {
       const meetup = {
         title: meetupData.title,
