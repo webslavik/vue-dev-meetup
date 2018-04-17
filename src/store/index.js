@@ -120,12 +120,17 @@ export const store = new Vuex.Store({
         location: meetupData.location,
         imageUrl: meetupData.imageUrl,
         description: meetupData.description,
-        date: meetupData.date,
-        id: 'tesdsfdsfds'
+        date: meetupData.date.toISOString()
       }
 
-      // firebase request
-      commit('createMeetup', meetup)
+      firebase.database().ref('meetups').push(meetup)
+        .then(response => {
+          console.log(response)
+          commit('createMeetup', meetup)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   }
 })
