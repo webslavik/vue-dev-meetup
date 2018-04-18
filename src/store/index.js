@@ -6,24 +6,7 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    loadedMeetups: [
-      {
-        imageUrl: 'http://www.100resilientcities.org/wp-content/uploads/2017/06/Boston-hero-crop.jpg',
-        id: 'sdfds1',
-        title: 'Meetup in Boston',
-        date: '2018-04-23',
-        location: 'Boston',
-        description: 'Some PHP meetup in Boston'
-      },
-      {
-        imageUrl: 'https://9227-presscdn-0-11-pagely.netdna-ssl.com/wp-content/uploads/2016/10/30393079282_9baa011f08_b.jpg',
-        id: 'ghssddf2',
-        title: 'Meetup in Philadelphia',
-        date: '2018-03-27',
-        location: 'Philadelphia',
-        description: 'Some description'
-      }
-    ],
+    loadedMeetups: [],
     user: null,
     loading: false,
     error: null
@@ -57,6 +40,9 @@ export const store = new Vuex.Store({
   mutations: {
     setUser (state, user) {
       state.user = user
+    },
+    setLoadMeetups (state, meetups) {
+      state.loadedMeetups = meetups
     },
     createMeetup (state, meetup) {
       state.loadedMeetups.push(meetup)
@@ -114,6 +100,32 @@ export const store = new Vuex.Store({
         })
     },
 
+    loadMeetups ({ commit }) {
+      commit('setLoading', true)
+      firebase.database().ref('meetups').once('value')
+        .then((data) => {
+          const meetups = []
+          const obj = data.val()
+
+          for (let key in obj) {
+            meetups.push({
+              id: key,
+              date: obj[key].date,
+              description: obj[key].description,
+              imageUrl: obj[key].imageUrl,
+              location: obj[key].location,
+              title: obj[key].title
+            })
+          }
+
+          commit('setLoadMeetups', meetups)
+          commit('setLoading', false)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', true)
+        })
+    },
     createMeetup ({ commit }, meetupData) {
       const meetup = {
         title: meetupData.title,
@@ -124,9 +136,12 @@ export const store = new Vuex.Store({
       }
 
       firebase.database().ref('meetups').push(meetup)
-        .then(response => {
-          console.log(response)
-          commit('createMeetup', meetup)
+        .then(data => {
+          const key = data.key
+          commit('createMeetup', {
+            ...meetup,
+            id: key
+          })
         })
         .catch(error => {
           console.log(error)

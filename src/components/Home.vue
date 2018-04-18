@@ -11,8 +11,19 @@
       </v-flex>
     </v-layout>
 
+    <!-- Preloader -->
+    <v-layout v-if='loading' row>
+      <v-flex sm12 class='text-sm-center'>
+        <v-progress-circular 
+          indeterminate 
+          :size="50" 
+          color="primary"
+          ></v-progress-circular>
+      </v-flex>
+    </v-layout>
+
     <!-- Carousel -->
-    <v-layout row wrap class='mb-2'>
+    <v-layout v-if='!loading' row wrap class='mb-2'>
       <v-flex sm12 xl6 offset-xl3>
         <v-carousel>
           <v-carousel-item 
@@ -47,6 +58,9 @@
     computed: {
       meetups () {
         return this.$store.getters.featuredMeetups
+      },
+      loading () {
+        return this.$store.getters.loading
       }
     },
     methods: {
