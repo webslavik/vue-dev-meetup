@@ -59,6 +59,9 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
+    autoSignIn ({ commit }, user) {
+      commit('setUser', {id: user.uid, registeredMeetups: []})
+    },
     signIn ({commit}, userData) {
       commit('setLoading', true)
       commit('clearError')
@@ -79,7 +82,7 @@ export const store = new Vuex.Store({
           console.log(error)
         })
     },
-    signUp ({commit}, userData) {
+    signUp ({ commit }, userData) {
       commit('setLoading', true)
       commit('clearError')
       firebase.auth().createUserWithEmailAndPassword(userData.email, userData.password)
@@ -98,6 +101,10 @@ export const store = new Vuex.Store({
           commit('setError', error)
           console.log(error)
         })
+    },
+    logout ({ commit }) {
+      firebase.auth().signOut()
+      commit('setUser', null)
     },
 
     loadMeetups ({ commit }) {
@@ -123,16 +130,17 @@ export const store = new Vuex.Store({
         })
         .catch(error => {
           console.log(error)
-          commit('setLoading', true)
+          commit('setLoading', false)
         })
     },
-    createMeetup ({ commit }, meetupData) {
+    createMeetup ({ commit, getters }, meetupData) {
       const meetup = {
         title: meetupData.title,
         location: meetupData.location,
         imageUrl: meetupData.imageUrl,
         description: meetupData.description,
-        date: meetupData.date.toISOString()
+        date: meetupData.date.toISOString(),
+        creatorId: getters.user.id
       }
 
       firebase.database().ref('meetups').push(meetup)
