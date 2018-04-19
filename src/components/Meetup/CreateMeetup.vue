@@ -36,13 +36,8 @@
       <!-- Image -->
       <v-layout row class='mb-3'>
         <v-flex sm12 xl4 offset-xl4>
-          <v-text-field
-            solo
-            name='image'
-            label='Image URL'
-            id='image'
-            v-model='imageUrl'
-            required />
+          <v-btn raised color='primary' @click='loadFile'>Upload Image</v-btn>
+          <input type="file" style='display: none' ref='inputFile' accept='image/*' @change='pickFile'>
         </v-flex>
       </v-layout>
       <v-layout row class='mb-3' v-if='imageUrl'>
@@ -101,6 +96,7 @@
         title: '',
         location: '',
         imageUrl: '',
+        image: null,
         description: '',
         date: null,
         time: null,
@@ -133,10 +129,14 @@
           return
         }
 
+        if (!this.image) {
+          return
+        }
+
         const meetupData = {
           title: this.title,
           location: this.location,
-          imageUrl: this.imageUrl,
+          image: this.image,
           description: this.description,
           date: this.setDate
         }
@@ -148,6 +148,24 @@
         this.location = ''
         this.imageUrl = ''
         this.description = ''
+      },
+      loadFile () {
+        this.$refs.inputFile.click()
+      },
+      pickFile (event) {
+        const files = event.target.files
+        let filename = files[0].name
+
+        if (filename.lastIndexOf('.') <= 0) {
+          return alert('Please add a valid file!')
+        }
+
+        const fileReader = new FileReader()
+        fileReader.addEventListener('load', () => {
+          this.imageUrl = fileReader.result
+        })
+        fileReader.readAsDataURL(files[0])
+        this.image = files[0]
       }
     }
   }
