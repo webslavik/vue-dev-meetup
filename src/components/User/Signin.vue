@@ -69,14 +69,15 @@
   import Alert from '../Shared/Alert'
 
   export default {
+    name: 'Signin',
+    components: {
+      Alert
+    },
     data () {
       return {
         email: null,
         password: null
       }
-    },
-    components: {
-      Alert
     },
     computed: {
       user () {

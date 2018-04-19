@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from 'firebase'
+import router from '../router'
 
 Vue.use(Vuex)
 
@@ -46,6 +47,21 @@ export const store = new Vuex.Store({
     },
     createMeetup (state, meetup) {
       state.loadedMeetups.push(meetup)
+    },
+    updateMeetup (state, payload) {
+      const meetup = state.loadedMeetups.find(meetup => {
+        return meetup.id === payload.id
+      })
+
+      if (meetup.title) {
+        meetup.title = payload.title
+      }
+      if (meetup.description) {
+        meetup.description = payload.description
+      }
+      if (meetup.date) {
+        meetup.date = payload.date
+      }
     },
 
     setLoading (state, payload) {
@@ -105,6 +121,7 @@ export const store = new Vuex.Store({
     logout ({ commit }) {
       firebase.auth().signOut()
       commit('setUser', null)
+      router.push({name: 'Home'})
     },
 
     loadMeetups ({ commit }) {
@@ -121,7 +138,8 @@ export const store = new Vuex.Store({
               description: obj[key].description,
               imageUrl: obj[key].imageUrl,
               location: obj[key].location,
-              title: obj[key].title
+              title: obj[key].title,
+              creatorId: obj[key].creatorId
             })
           }
 
@@ -168,6 +186,30 @@ export const store = new Vuex.Store({
         })
         .catch(error => {
           console.log(error)
+        })
+    },
+    updateMeetupData ({ commit }, meetupData) {
+      commit('setLoading', true)
+      const meetupObj = {}
+
+      if (meetupData.title) {
+        meetupObj.title = meetupData.title
+      }
+      if (meetupData.description) {
+        meetupObj.description = meetupData.description
+      }
+      if (meetupData.date) {
+        meetupObj.date = meetupData.date
+      }
+
+      firebase.database().ref('meetups').child(meetupData.id).update(meetupObj)
+        .then(() => {
+          commit('setLoading', false)
+          commit('updateMeetup', meetupData)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', true)
         })
     }
   }

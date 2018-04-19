@@ -80,15 +80,16 @@
   import Alert from '../Shared/Alert'
 
   export default {
+    name: 'Signup',
+    components: {
+      Alert
+    },
     data () {
       return {
         email: null,
         password: null,
         confirmPassword: null
       }
-    },
-    components: {
-      Alert
     },
     computed: {
       comparePassword () {

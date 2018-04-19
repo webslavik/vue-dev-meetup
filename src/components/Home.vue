@@ -13,7 +13,7 @@
 
     <!-- Preloader -->
     <v-layout v-if='loading' row>
-      <v-flex sm12 class='text-sm-center'>
+      <v-flex style='display: flex; height: 500px;' sm12 justify-center align-center>
         <v-progress-circular 
           indeterminate 
           :size="50" 
@@ -23,7 +23,7 @@
     </v-layout>
 
     <!-- Carousel -->
-    <v-layout v-if='!loading' row wrap class='mb-2'>
+    <v-layout v-else row wrap class='mb-2'>
       <v-flex sm12 xl6 offset-xl3>
         <v-carousel>
           <v-carousel-item 
