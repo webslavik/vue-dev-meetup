@@ -31,9 +31,9 @@
             <div>{{ meetup.date | date }} - {{ meetup.location }}</div>
             <p>{{ meetup.description }}</p>
           </v-card-text>
-          <v-card-actions>
+          <v-card-actions class='pb-3'>
             <v-spacer />
-            <v-btn class='secondary'>Register</v-btn>
+            <registration-dialog :meetupId='meetup.id' />
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -46,13 +46,15 @@
   import EditMeetupDialog from './Edit/EditMeetupDialog'
   import EditMeetupDateDialog from './Edit/EditMeetupDateDialog'
   import EditMeetupTimeDialog from './Edit/EditMeetupTimeDialog'
+  import RegistrationDialog from './Registration/RegistrationDialog'
 
   export default {
     name: 'Meetup',
     components: {
       EditMeetupDialog,
       EditMeetupDateDialog,
-      EditMeetupTimeDialog
+      EditMeetupTimeDialog,
+      RegistrationDialog
     },
     props: {
       id: {

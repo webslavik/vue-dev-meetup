@@ -63,6 +63,25 @@ export const store = new Vuex.Store({
         meetup.date = meetupData.date
       }
     },
+    registerUserForMeetup (state, meetupData) {
+      const meetup = state.user.registeredMeetups.findIndex(meetup => meetup.id === meetupData.id)
+
+      if (meetup) {
+        return
+      }
+
+      state.user.registeredMeetups.push(meetupData.id)
+      state.user.firebaseKeys[meetupData.id] = meetupData.firebaseKeys
+    },
+    unregisterUserForMeetup (state, meetupId) {
+      const registeredMeetups = state.user.registeredMeetups
+      const meetupIndex = registeredMeetups.findIndex(meetup => meetup.meetupId === meetupId)
+
+      if (meetupIndex) {
+        registeredMeetups.splice(meetupIndex, 1)
+        Reflect.deleteProperty(state.user.firebaseKeys, meetupId)
+      }
+    },
 
     setLoading (state, payload) {
       state.loading = payload
@@ -76,18 +95,25 @@ export const store = new Vuex.Store({
   },
   actions: {
     autoSignIn ({ commit }, user) {
-      commit('setUser', {id: user.uid, registeredMeetups: []})
+      commit('setUser', {
+        id: user.uid,
+        registeredMeetups: [],
+        firebaseKeys: {}
+      })
     },
     signIn ({commit}, userData) {
       commit('setLoading', true)
       commit('clearError')
-      firebase.auth().signInWithEmailAndPassword(userData.email, userData.password)
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(userData.email, userData.password)
         .then(user => {
           commit('setLoading', false)
 
           const authUser = {
             id: user.uid,
-            registeredMeetups: []
+            registeredMeetups: [],
+            firebaseKeys: {}
           }
 
           commit('setUser', authUser)
@@ -101,13 +127,16 @@ export const store = new Vuex.Store({
     signUp ({ commit }, userData) {
       commit('setLoading', true)
       commit('clearError')
-      firebase.auth().createUserWithEmailAndPassword(userData.email, userData.password)
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(userData.email, userData.password)
         .then(user => {
           commit('setLoading', false)
 
           const newUser = {
             id: user.uid,
-            registeredMeetups: []
+            registeredMeetups: [],
+            firebaseKeys: {}
           }
 
           commit('setUser', newUser)
@@ -203,14 +232,62 @@ export const store = new Vuex.Store({
         meetupData.date = meetupData.date.toISOString()
       }
 
-      firebase.database().ref('meetups').child(meetupData.id).update(meetupObj)
+      firebase
+        .database()
+        .ref('meetups')
+        .child(meetupData.id)
+        .update(meetupObj)
         .then(() => {
           commit('setLoading', false)
           commit('updateMeetup', meetupData)
         })
         .catch(error => {
           console.log(error)
-          commit('setLoading', true)
+          commit('setLoading', false)
+        })
+    },
+
+    registerUserForMeetup ({ commit, getters }, meetupId) {
+      commit('setLoading', true)
+      const user = getters.user
+
+      firebase
+        .database()
+        .ref(`/users/${user.id}/registrations`)
+        .push(meetupId)
+        .then(data => {
+          commit('setLoading', false)
+          commit('registerUserForMeetup', {
+            id: meetupId,
+            firebaseKeys: data.key
+          })
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+        })
+    },
+    unregisterUserForMeetup ({ commit, getters }, meetupId) {
+      commit('setLoading', true)
+      const user = getters.user
+
+      if (!user.firebaseKeys) {
+        return
+      }
+
+      const firebaseKeys = user.firebaseKeys[meetupId]
+      firebase
+        .database()
+        .ref(`/users/${user.id}/registrations/`)
+        .child(firebaseKeys)
+        .remove()
+        .then(() => {
+          commit('setLoading', false)
+          commit('unregisterUserForMeetup', meetupId)
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
         })
     }
   }
