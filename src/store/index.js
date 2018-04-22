@@ -48,19 +48,19 @@ export const store = new Vuex.Store({
     createMeetup (state, meetup) {
       state.loadedMeetups.push(meetup)
     },
-    updateMeetup (state, payload) {
+    updateMeetup (state, meetupData) {
       const meetup = state.loadedMeetups.find(meetup => {
-        return meetup.id === payload.id
+        return meetup.id === meetupData.id
       })
 
-      if (meetup.title) {
-        meetup.title = payload.title
+      if (meetupData.title) {
+        meetup.title = meetupData.title
       }
-      if (meetup.description) {
-        meetup.description = payload.description
+      if (meetupData.description) {
+        meetup.description = meetupData.description
       }
-      if (meetup.date) {
-        meetup.date = payload.date
+      if (meetupData.date) {
+        meetup.date = meetupData.date
       }
     },
 
@@ -199,7 +199,8 @@ export const store = new Vuex.Store({
         meetupObj.description = meetupData.description
       }
       if (meetupData.date) {
-        meetupObj.date = meetupData.date
+        meetupObj.date = meetupData.date.toISOString()
+        meetupData.date = meetupData.date.toISOString()
       }
 
       firebase.database().ref('meetups').child(meetupData.id).update(meetupObj)

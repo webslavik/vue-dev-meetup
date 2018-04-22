@@ -63,14 +63,12 @@
       <v-layout row class='mb-4'>
         <v-flex sm12 xl4 offset-xl4>
           <v-date-picker header-color="primary" v-model="date" />
-          <div>{{ date }}</div>
         </v-flex>
       </v-layout>
 
       <v-layout row class='mb-4'>
         <v-flex sm12 xl4 offset-xl4>
           <v-time-picker header-color="primary"  format='24hr' v-model="time" />
-          <div>{{ time }}</div>
         </v-flex>
       </v-layout>
 

@@ -9,8 +9,7 @@
     <!-- Dialog -->
     <v-card>
       <v-container>
-        <v-card-title class="headline">Edit your meetup data</v-card-title>
-        <div>Save: {{ save }}</div>
+        <v-card-title class="headline">Edit Meetup</v-card-title>
         <v-card-text>
           <!-- Title -->
           <v-layout row>
@@ -76,7 +75,7 @@
           id: this.meetup.id,
           title: this.editTitle,
           description: this.editDescription,
-          // date: ?
+          date: this.meetup.date
         })
       }
     }

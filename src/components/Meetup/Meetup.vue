@@ -19,7 +19,9 @@
             <h2>{{ meetup.title }}</h2>
             <template v-if='userIsCreator'>
               <v-spacer />
-              <edit-meetup-dialog :meetup='meetup'></edit-meetup-dialog>
+              <edit-meetup-dialog :meetup='meetup' />
+              <edit-meetup-date-dialog :meetup='meetup' />
+              <edit-meetup-time-dialog :meetup='meetup' />
             </template>
           </v-card-title>
           <v-card-media
@@ -42,11 +44,15 @@
 
 <script>
   import EditMeetupDialog from './Edit/EditMeetupDialog'
+  import EditMeetupDateDialog from './Edit/EditMeetupDateDialog'
+  import EditMeetupTimeDialog from './Edit/EditMeetupTimeDialog'
 
   export default {
     name: 'Meetup',
     components: {
-      EditMeetupDialog
+      EditMeetupDialog,
+      EditMeetupDateDialog,
+      EditMeetupTimeDialog
     },
     props: {
       id: {
@@ -64,7 +70,6 @@
         if (!this.userIsAuthenticated) {
           return false
         }
-        console.log(this.$store.getters.user.id, this.meetup.creatorId)
         return this.$store.getters.user.id === this.meetup.creatorId
       },
       loading () {
