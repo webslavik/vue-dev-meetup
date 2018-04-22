@@ -66,7 +66,7 @@ export const store = new Vuex.Store({
     registerUserForMeetup (state, meetupData) {
       const meetup = state.user.registeredMeetups.findIndex(meetup => meetup.id === meetupData.id)
 
-      if (meetup) {
+      if (meetup >= 0) {
         return
       }
 
@@ -253,7 +253,8 @@ export const store = new Vuex.Store({
 
       firebase
         .database()
-        .ref(`/users/${user.id}/registrations`)
+        .ref(`/users/${user.id}`)
+        .child('/registrations/')
         .push(meetupId)
         .then(data => {
           commit('setLoading', false)

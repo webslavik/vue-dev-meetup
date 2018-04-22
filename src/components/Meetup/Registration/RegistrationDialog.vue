@@ -3,7 +3,8 @@
 
     <!-- Show dialog -->
     <v-btn color='secondary' slot='activator'>
-      {{ userIsRegistered }}
+      <!-- {{ userIsRegistered }} -->
+      Register
     </v-btn>
 
     <!-- Dialog -->
@@ -38,16 +39,14 @@
           return meetupId === this.meetupId
         })
 
-        return state ? 'Register' : 'Unregister'
+        return state >= 0
       }
     },
     methods: {
       comfirm () {
         if (this.userIsRegistered) {
-          console.log('Unreg:', this.meetupId)
           this.$store.dispatch('unregisterUserForMeetup', this.meetupId)
         } else {
-          console.log('Reg:', this.meetupId)
           this.$store.dispatch('registerUserForMeetup', this.meetupId)
         }
       }
