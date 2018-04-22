@@ -3,8 +3,7 @@
 
     <!-- Show dialog -->
     <v-btn color='secondary' slot='activator'>
-      <!-- {{ userIsRegistered }} -->
-      Register
+      {{ userIsRegistered ? 'Unregister' : 'Register' }}
     </v-btn>
 
     <!-- Dialog -->
