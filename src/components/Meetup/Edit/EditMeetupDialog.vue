@@ -74,8 +74,7 @@
         this.$store.dispatch('updateMeetupData', {
           id: this.meetup.id,
           title: this.editTitle,
-          description: this.editDescription,
-          date: this.meetup.date
+          description: this.editDescription
         })
       }
     }

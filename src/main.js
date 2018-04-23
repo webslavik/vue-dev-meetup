@@ -5,7 +5,7 @@ import router from './router'
 import Vuetify from 'vuetify'
 
 import DateFilter from './filters/date'
-import { store } from './store'
+import { store } from './store/index'
 
 import 'vuetify/dist/vuetify.min.css'
 
