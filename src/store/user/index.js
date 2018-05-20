@@ -152,7 +152,7 @@ const actions = {
               .ref(`/users/${user.id}/registrations/`)
               .child(firebaseKeys)
               .remove()
-              
+
       commit('setLoading', false)
       commit('unregisterUserForMeetup', meetupId)
     } catch (error) {

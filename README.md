@@ -2,6 +2,8 @@
 
 > vue.js + vuetify + firebase
 
+See result there: https://dev-meetup-a3a7b.firebaseapp.com/
+
 ## Build Setup
 
 ``` bash
